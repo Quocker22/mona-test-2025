@@ -75,7 +75,7 @@ function CreateOrder() {
                 <PaymentMethod
                     control={control}
                     errors={errors}
-                    paymentMethod={watch('paymentMethod')}
+                    watch={watch}
                 />
 
                 <Button type="primary" size='large' htmlType="submit">Hoàn tất thanh toán</Button>

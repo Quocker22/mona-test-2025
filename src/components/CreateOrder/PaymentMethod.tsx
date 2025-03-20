@@ -1,15 +1,15 @@
 import { Control, UseFormWatch, Controller, FieldErrors } from 'react-hook-form';
 import { Form, Radio, InputNumber } from 'antd';
 import { OrderForm } from '@/types';
-import { memo } from 'react';
+import FormInput from '../common/FormInput';
 
 interface PaymentMethodProps {
   control: Control<OrderForm>;
   errors: FieldErrors<OrderForm>;
-  paymentMethod: string;
+  watch: UseFormWatch<OrderForm>;
 }
 
-const PaymentMethod = memo(({ control, errors, paymentMethod }: PaymentMethodProps) => {
+const PaymentMethod = ({ control, errors, watch }: PaymentMethodProps) => {
   return (
     <div className='flex flex-row gap-2 w-full items-end'>
       <Form.Item
@@ -31,7 +31,7 @@ const PaymentMethod = memo(({ control, errors, paymentMethod }: PaymentMethodPro
         />
       </Form.Item>
 
-      {paymentMethod === 'CASH' && (
+      {watch('paymentMethod') === 'CASH' && (
         <Form.Item
           label="Tiền khách đưa"
           validateStatus={errors.cashAmount ? 'error' : undefined}
@@ -47,6 +47,6 @@ const PaymentMethod = memo(({ control, errors, paymentMethod }: PaymentMethodPro
       )}
     </div>
   );
-});
+};
 
 export { PaymentMethod }; 
