@@ -24,21 +24,6 @@ export interface OrderForm {
 export interface CartItem {
   productId: string;
   quantity: number;
-  price: number;
+  price?: number;
   promotionId?: string;
-}
-
-export interface Order {
-  id: string;
-  customer: {
-    name: string;
-    email: string;
-    phone: string;
-  };
-  cart: CartItem[];
-  paymentMethod: 'CASH' | 'CARD';
-  cashAmount?: number;
-  totalAmount: number;
-  createdAt: string;
-  updatedAt: string;
 }

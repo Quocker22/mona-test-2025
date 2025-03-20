@@ -1,11 +1,11 @@
 import { Product, Promotion } from '@/types';
 
 export const products: Product[] = [
-  { id: '1', name: 'iPhone 15 Pro', price: 999, image: '/images/iphone.jpg' },
-  { id: '2', name: 'MacBook Air M2', price: 1299, image: '/images/macbook.jpg' },
-  { id: '3', name: 'AirPods Pro', price: 249, image: '/images/airpods.jpg' },
-  { id: '4', name: 'iPad Air', price: 599, image: '/images/ipad.jpg' },
-  { id: '5', name: 'Apple Watch Series 9', price: 399, image: '/images/watch.jpg' },
+  { id: '1', name: 'iPhone 15 Pro', price: 10000000 },
+  { id: '2', name: 'MacBook Air M2', price: 12000000 },
+  { id: '3', name: 'AirPods Pro', price: 2000000 },
+  { id: '4', name: 'iPad Air', price: 5000000 },
+  { id: '5', name: 'Apple Watch Series 9', price: 3000000 },
 ];
 
 export const promotions: Promotion[] = [

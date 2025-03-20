@@ -1,51 +1,38 @@
-import { Controller } from 'react-hook-form';
+import { Control, Controller, FieldErrors } from 'react-hook-form';
 import { Form, Input } from 'antd';
+import { OrderForm } from '@/types';
+import FormInput from '@/components/common/FormInput';
 
 interface CustomerInfoProps {
-  control: any;
-  errors: any;
+  control: Control<OrderForm>;
+  errors: FieldErrors<OrderForm>;
 }
 
 const CustomerInfo = ({ control, errors }: CustomerInfoProps) => {
   return (
-    <>
-      <Form.Item 
-        label="Tên khách hàng" 
-        validateStatus={errors.customer?.name ? 'error' : undefined}
-        help={errors.customer?.name?.message}
-      >
-        <Controller 
-          name="customer.name" 
-          control={control} 
-          render={({ field }) => <Input {...field} />} 
-        />
-      </Form.Item>
-      
-      <Form.Item 
-        label="Email" 
-        validateStatus={errors.customer?.email ? 'error' : undefined}
-        help={errors.customer?.email?.message}
-      >
-        <Controller 
-          name="customer.email" 
-          control={control} 
-          render={({ field }) => <Input {...field} />} 
-        />
-      </Form.Item>
-      
-      <Form.Item 
-        label="Số điện thoại" 
-        validateStatus={errors.customer?.phone ? 'error' : undefined}
-        help={errors.customer?.phone?.message}
-      >
-        <Controller 
-          name="customer.phone" 
-          control={control} 
-          render={({ field }) => <Input {...field} />} 
-        />
-      </Form.Item>
-    </>
+    <div className='flex flex-row w-full gap-4'>
+      <FormInput<OrderForm>
+        control={control}
+        name="customer.name"
+        label="Tên khách hàng"
+        error={errors.customer?.name}
+      />
+
+      <FormInput<OrderForm>
+        control={control}
+        name="customer.email"
+        label="Email"
+        error={errors.customer?.email}
+      />
+
+      <FormInput<OrderForm>
+        control={control}
+        name="customer.phone"
+        label="Số điện thoại"
+        error={errors.customer?.phone}
+      />
+    </div>
   );
 };
 
-export default CustomerInfo; 
+export { CustomerInfo }; 

@@ -17,7 +17,7 @@ export const orderSchema = yup.object().shape({
   ).min(1, 'Vui lòng thêm ít nhất một sản phẩm vào giỏ hàng'),
   paymentMethod: yup.string().required('Vui lòng chọn phương thức thanh toán'),
   cashAmount: yup.number().when('paymentMethod', {
-    is: 'cash',
+    is: 'CASH',
     then: (schema) => schema
       .required('Vui lòng nhập số tiền khách đưa')
       .positive('Số tiền phải lớn hơn 0')
@@ -27,7 +27,7 @@ export const orderSchema = yup.object().shape({
         function (value) {
           const cart = this.parent.cart || [];
           const totalAmount = cart.reduce((sum: number, item: CartItem) => {
-            let total = item.price * item.quantity;
+            let total = (item.price || 0) * item.quantity;
             const promo = promotions.find(p => p.id === item.promotionId);
             if (promo) {
               total = promo.type === 'PERCENTAGE' ? total * (1 - promo.value / 100) : Math.max(0, total - promo.value);

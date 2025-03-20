@@ -1,6 +1,9 @@
-import { Controller, Control, FieldErrors, useFieldArray, UseFormGetValues } from 'react-hook-form';
+import { Controller, Control, FieldErrors, useFieldArray, UseFormGetValues, UseFormSetValue } from 'react-hook-form';
 import { Button, Form, Select, InputNumber, Table } from 'antd';
 import { OrderForm, CartItem, Product, Promotion } from '../../types';
+import { DeleteOutlined, InboxOutlined, PlusOutlined } from '@ant-design/icons';
+import { formatNumber } from '@/utils/format';
+import FormSelect from '../common/FormSelect';
 
 interface CartTableProps {
   control: Control<OrderForm>;
@@ -9,6 +12,12 @@ interface CartTableProps {
   promotions: Promotion[];
   calculateItemTotal: (item: CartItem) => number;
   getValues: UseFormGetValues<OrderForm>;
+  setValue: UseFormSetValue<OrderForm>
+}
+
+interface CartTableRecord extends CartItem {
+  id: string;
+  index: number;
 }
 
 const CartTable = ({
@@ -17,16 +26,16 @@ const CartTable = ({
   products,
   promotions,
   calculateItemTotal,
-  getValues
+  getValues,
+  setValue
 }: CartTableProps) => {
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'cart'
   });
 
-  // Thêm sản phẩm vào giỏ hàng
   const handleAddToCart = () => {
-    append({ productId: '', quantity: 1, price: 0, promotionId: '' });
+    append({ productId: '', quantity: 1 });
   };
 
   const columns = [
@@ -34,50 +43,52 @@ const CartTable = ({
       title: 'Sản phẩm',
       dataIndex: 'productId',
       key: 'productId',
-      render: (_, record: any) => (
-        <Form.Item
-          validateStatus={errors.cart?.[record.index]?.productId ? 'error' : undefined}
-          help={errors.cart?.[record.index]?.productId?.message}
-        >
-          <Controller
-            name={`cart.${record.index}.productId` as const}
-            control={control}
-            render={({ field }) => (
-              <Select {...field} style={{ width: '100%' }}>
-                {products.map(p => <Select.Option key={p.id} value={p.id}>{p.name}</Select.Option>)}
-              </Select>
-            )}
-          />
-        </Form.Item>
+      width: '30%',
+      render: (_: unknown, record: CartTableRecord) => (
+        <FormSelect<OrderForm>
+          control={control}
+          name={`cart.${record.index}.productId` as const}
+          error={errors.cart?.[record.index]?.productId}
+          options={products}
+          displayKey="name"
+          onChange={(value, product) => {
+            setValue(`cart.${record.index}.price`, product.price || 0);
+          }}
+        />
       )
     },
     {
       title: 'Đơn giá',
       dataIndex: 'price',
       key: 'price',
-      render: (_, record: any) => (
-        <Form.Item
-          validateStatus={errors.cart?.[record.index]?.price ? 'error' : undefined}
-          help={errors.cart?.[record.index]?.price?.message}
-          
-        >
-          <Controller
-            name={`cart.${record.index}.price` as const}
-            control={control}
-            render={({ field }) => <InputNumber {...field} />}
-          />
-        </Form.Item>
-      )
+      width: '15%',
+      render: (_: unknown, record: CartTableRecord) => {
+        const productId = getValues(`cart.${record.index}.productId`);
+        const selectedProduct = products.find(p => p.id === productId);
+        const price = selectedProduct?.price || 0;
+
+        return (
+          <div className="mb-6">
+            {formatNumber(price)}
+            <Controller
+              name={`cart.${record.index}.price` as const}
+              control={control}
+              render={({ field }) => <InputNumber className='!hidden' {...field} />}
+            />
+          </div>
+        );
+      }
     },
     {
       title: 'Số lượng',
       dataIndex: 'quantity',
       key: 'quantity',
-      render: (_, record: any) => (
+      width: '15%',
+      render: (_: unknown, record: CartTableRecord) => (
         <Form.Item
           validateStatus={errors.cart?.[record.index]?.quantity ? 'error' : undefined}
           help={errors.cart?.[record.index]?.quantity?.message}
-          
+
         >
           <Controller
             name={`cart.${record.index}.quantity` as const}
@@ -91,39 +102,42 @@ const CartTable = ({
       title: 'Khuyến mãi',
       dataIndex: 'promotionId',
       key: 'promotionId',
-      render: (_, record: any) => (
-        <Controller
-          name={`cart.${record.index}.promotionId` as const}
-          control={control}
-          render={({ field }) => (
-            <Select {...field} style={{ width: '100%' }}>
-              <Select.Option value="">Không áp dụng</Select.Option>
-              {promotions.map(p => <Select.Option key={p.id} value={p.id}>{p.code}</Select.Option>)}
-            </Select>
-          )}
-        />
+      width: '20%',
+      render: (_: unknown, record: CartTableRecord) => (
+        <div className='mb-6'>
+          <FormSelect<OrderForm>
+            control={control}
+            name={`cart.${record.index}.promotionId` as const}
+            error={errors.cart?.[record.index]?.promotionId}
+            options={[{ id: '', name: 'Không áp dụng' }, ...promotions]}
+            displayKey="code"
+          />
+        </div>
       )
     },
     {
       title: 'Thành tiền',
       key: 'total',
-      render: (_, record: any) => `$${calculateItemTotal(getValues(`cart.${record.index}`)).toFixed(2)}`
+      width: '25%',
+      render: (_: unknown, record: CartTableRecord) => <div className='mb-6'>{formatNumber(calculateItemTotal(getValues(`cart.${record.index}`)))}</div>
     },
     {
-      title: 'Xóa',
       key: 'action',
-      render: (_, record: any) => (
-        <Button type="primary" danger onClick={() => remove(record.index)}>Xóa</Button>
+      width: '10%',
+      render: (_: unknown, record: CartTableRecord) => (
+        <Button type="primary" className='mb-6' danger onClick={() => remove(record.index)}><DeleteOutlined /></Button>
       )
     }
   ]
 
   return (
     <>
-      <Button type="dashed" onClick={handleAddToCart}>Thêm sản phẩm</Button>
+      <div className="flex justify-end w-full">
+        <Button type="dashed" onClick={handleAddToCart}><PlusOutlined /> Thêm sản phẩm</Button>
+      </div>
 
       {errors.cart && errors.cart.message && (
-        <div style={{ color: 'red', marginTop: 8 }}>{errors.cart.message}</div>
+        <div className='text-end text-red-500' >{errors.cart.message}</div>
       )}
 
       <Table
@@ -132,6 +146,9 @@ const CartTable = ({
           key: field.id,
           index
         }))}
+        locale={{
+          emptyText: <div className='flex flex-col items-center justify-center text-center'> <InboxOutlined className='text-3xl' /> Không có sản phẩm</div>
+        }}
         pagination={false}
         columns={columns}
       />
@@ -139,4 +156,4 @@ const CartTable = ({
   );
 };
 
-export default CartTable; 
+export { CartTable }; 
