@@ -93,7 +93,7 @@ const CartTable = ({
           <Controller
             name={`cart.${record.index}.quantity` as const}
             control={control}
-            render={({ field }) => <InputNumber {...field} />}
+            render={({ field }) => <InputNumber min={1} {...field} />}
           />
         </Form.Item>
       )

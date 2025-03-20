@@ -33,10 +33,4 @@ export const promotions: Promotion[] = [
     type: 'FIXED', 
     value: 100,
   },
-  {   
-    id: '5', 
-    code: 'NONE', 
-    type: 'FIXED', 
-    value: 0,
-  },
 ]; 

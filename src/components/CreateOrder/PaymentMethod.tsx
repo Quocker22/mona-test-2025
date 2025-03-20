@@ -2,6 +2,7 @@ import { Control, UseFormWatch, Controller, FieldErrors } from 'react-hook-form'
 import { Form, Radio, InputNumber } from 'antd';
 import { OrderForm } from '@/types';
 import FormInput from '../common/FormInput';
+import { formatNumber } from '@/utils/format';
 
 interface PaymentMethodProps {
   control: Control<OrderForm>;
