@@ -3,7 +3,7 @@
 import { CreateOrder } from '@/components/CreateOrder';
 import Image from 'next/image';
 
-export default function Home() {
+export default function Quoc() {
   return (
     <main className="min-h-screen bg-[#e7ecf1]">
       <div className="max-w-5xl mx-auto">

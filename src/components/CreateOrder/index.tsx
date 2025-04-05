@@ -47,7 +47,7 @@ function CreateOrder() {
     }, [watch('cart'), calculateItemTotal]);
 
     const onSubmit = (data: OrderForm) => {
-        console.log(data);
+        
         setShowConfirmModal(true);
     };
 

@@ -7,7 +7,6 @@ import { formatNumber } from '@/utils/format';
 import { CartItem, OrderForm } from '@/types';
 const { Title, Text } = Typography;
 
-
 interface ConfirmOrderProps {
   order: OrderForm
   onClose?: () => void;
